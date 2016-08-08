@@ -1,0 +1,7 @@
+load("/Users/mbiggins/Documents/Data Science/Week 2/Project 2/personal finance twitter bot/mentions.rda")
+reply_query.df
+reply_query.df$text
+asecret
+aSecret
+mentions
+mentions(n=1)
