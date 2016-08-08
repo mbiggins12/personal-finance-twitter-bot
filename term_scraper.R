@@ -1,33 +1,32 @@
 # ------------
 # Data Science <> Week 2 <> Project <> Personal Finance Twitter Bot
-# August 03, 2016
+# August 05, 2016
 # tania ermak <><><> matthew biggins
 # ------------
-
-
 
 # Environment Setup -------------------------------------------------------
 library(tm)
 library(rvest)
+library(dplyr)
 
+data <- lapply(1:53, function(page) {
+  URL <- sprintf("http://www.investopedia.com/categories/personalfinance.asp?page=%s", page)
+  
+  # scraping... to produce a data.frame
+  
+  use.URL <- read_html(URL)
+  terms <- use.URL %>% html_nodes(css = "#responsive-insert-ad > ol > li > h3 > a") %>% html_text(2)
+  href_terms <- use.URL %>% html_nodes(css = "#responsive-insert-ad > ol > li > h3 > a") %>% html_attr("href")
+  page_dataframe <- data.frame(Terms = terms, Link = href_terms, stringsAsFactors = FALSE)
+})
 
-# Scraping Data -----------------------------------------------------------
+data <- bind_rows(data)
 
-
-# can append page number at the end of each link to make scraping easier "?page=#"
-html <- read_html("http://www.investopedia.com/categories/personalfinance.asp")
-PFterms <- html %>% html_nodes(css = "#responsive-insert-ad > ol > li > h3 > a") %>% html_text(2)
-
-
-# Lets try a loop here!
-i <- 1
-while (i < 53) {
-  link <- sprintf("http://www.investopedia.com/categories/personalfinance.asp?page=%s", i)
-  html <- read_html(link)
-  value <- html %>% html_nodes(css = "#responsive-insert-ad > ol > li > h3 > a") %>% html_text(2)
-  PFterms <- c(PFterms, value)
-  i <- i + 1
-}
-
-head(PFterms)
-
+data$definitions <- sapply(data$Link, function(def) {
+  # scrape definitions...
+  link <- sprintf("http://www.investopedia.com%s", def) 
+  use.link <- read_html(link) %>%
+    html_nodes(css = "#block-system-main > div > div.layout-body.box.clear > div > p:nth-child(2)") %>% 
+    html_text(2) 
+  
+} )
