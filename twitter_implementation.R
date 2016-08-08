@@ -5,6 +5,8 @@
 # ------------
 library(twitteR)
 
+data <- read.csv("terms_library.csv")
+
 # Major Keys --------------------------------------------------------------
 
 # Consumer Key (API Key) 
@@ -31,13 +33,6 @@ tweet_link <- sprintf("http://www.investopedia.com%s", data$Link[tweet_ref])
 tweet_text <- paste(tweet_term, tweet_def_short, sep = ": ")
 tweet_full <- paste(tweet_text, tweet_link, sep = "")
 tweet(tweet_full)
-
-# Post articles
-article_link <- guardian.frame$webUrl[1]
-article_full <- paste(article_link)
-tweet(article_full)
-
-
 
 # Tweet back response -----------------------------------------------------
 
